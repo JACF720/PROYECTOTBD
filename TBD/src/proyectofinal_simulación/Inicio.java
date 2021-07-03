@@ -5,16 +5,6 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-/* 3511 
-Equipo 3 
-Simulación
-/**
- * @author Aguilar Castellanos Alexis
- * @author Alatorre Perez Irving Alan
- * @author Antonio Torres Juan
- * @author Casillas Flores Jaime Alberto
- * @author Sanchez Hernandez Brenda Alejandra
- */
 
 public class Inicio extends javax.swing.JFrame {
     
@@ -23,6 +13,7 @@ public class Inicio extends javax.swing.JFrame {
     public Inicio() {
         initComponents();
         setLocationRelativeTo(null);
+        
     }
 
     @SuppressWarnings("unchecked")
