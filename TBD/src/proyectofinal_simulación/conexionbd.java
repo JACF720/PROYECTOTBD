@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package proyectofinal_simulación;
 
 import java.io.*;
@@ -21,11 +16,11 @@ public class conexionbd {
     final String url_bd = "jdbc:mysql://localhost/?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     final String url_bd2 = "jdbc:mysql://localhost/" + bd1 + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     public String rutaArchivo, linea;
-    public int cantUs = 100, querycontador;
     String[] parts;
-    String p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15;
+    String p1, p2, p3, p4, p5, p6, p7, p8;
     Inicio ini = new Inicio();
     Formulario formu = new Formulario();
+    
     
 
     public void ValidarUs(String us, String contraseña) {
@@ -113,12 +108,12 @@ public class conexionbd {
             }
         }
     }
-
-    public void leerArchivo() throws SQLException, ClassNotFoundException {
+    
+    public void leerArchivol() throws SQLException, ClassNotFoundException {
         Inicio in=new Inicio();
-        Codigo chi=new Codigo(usersql,passsql);
+        Codigo cod=new Codigo(usersql,passsql);
         try {
-            this.rutaArchivo = "registrolibros.txt";
+            this.rutaArchivo = "flibro.txt";
             FileReader fr = new FileReader(rutaArchivo);
             BufferedReader entradaArchivo = new BufferedReader(fr);
             linea = entradaArchivo.readLine();
@@ -132,23 +127,25 @@ public class conexionbd {
                 p6 = parts[5];
                 p7 = parts[6];
                 p8 = parts[7];
-                System.out.println("-" + p1 + "-" + p2 + "-" + p3 + "-" + p4 + "-" + p5 + "-" + p6 + "-" + p7 + "-" + p8);
-                insertarFormulario();
+                System.out.println(p1 + "-" + p2 + "-" + p3 + "-" + p4 + "-" + p5 + "-" + p6 + "-" + p7 + "-" + p8);
+                insFLibro();
                 linea = entradaArchivo.readLine();
             }
-            borrararchivo();
-            chi.setVisible(true);
+            borrararchivol();
+            cod.setVisible(true);
             in.dispose();
         } catch (IOException ex) {
             System.out.println("Error en la apertura del archivo " + ex.toString());
         }
-
-    }
+}
+    
     public void leerArchivousr() throws SQLException, ClassNotFoundException {
         Inicio in=new Inicio();
-        Codigo chi=new Codigo(usersql,passsql);
+        Codigo cod=new Codigo(usersql,passsql);
         try {
-            this.rutaArchivo = "registrousr.txt";
+
+            this.rutaArchivo = "fusuario.txt";
+
             FileReader fr = new FileReader(rutaArchivo);
             BufferedReader entradaArchivo = new BufferedReader(fr);
             linea = entradaArchivo.readLine();
@@ -159,67 +156,94 @@ public class conexionbd {
                 p3 = parts[2];
                 p4 = parts[3];
                 p5 = parts[4];
-                p6 = parts[5];
-                p7 = parts[6];
-                p8 = parts[7];
-                System.out.println("-" + p1 + "-" + p2 + "-" + p3 + "-" + p4 + "-" + p5 + "-" + p6 + "-" + p7 + "-" + p8);
-                insertarFormulario();
+                System.out.println(p1 + "-" + p2 + "-" + p3 + "-" + p4 + "-" + p5);
+                insFUsuario();
                 linea = entradaArchivo.readLine();
             }
-            borrararchivo();
-            chi.setVisible(true);
+            borrararchivol();
+            cod.setVisible(true);
             in.dispose();
         } catch (IOException ex) {
             System.out.println("Error en la apertura del archivo " + ex.toString());
         }
-
+}
+    
+    public void insFLibro() throws SQLException, ClassNotFoundException {
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    Class.forName(Controlador);
+    conexion = DriverManager.getConnection(url_bd2, usersql, passsql);
+    sentencia = conexion.createStatement();
+    String query = "INSERT INTO LIBROS(libronombre,editorial,autor,genero,pais,paginas,edicion,precio) values ('" + p1 + "','" + p2 + "','" + p3 + "','" + p4 + "','" + p5 + "','" + p6 + "','" + p7 + "','" + p8 + "')";
+    try {
+        ps = conexion.prepareStatement(query, ps.RETURN_GENERATED_KEYS);
+        ps.executeUpdate(query, ps.RETURN_GENERATED_KEYS);
+        JOptionPane.showMessageDialog(null, "Se han completado los registros del formulario.", "Aviso!!", JOptionPane.INFORMATION_MESSAGE);
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, e.toString(), "AVISO!!", JOptionPane.ERROR_MESSAGE);
     }
+}
 
-    public void insertarFormulario() throws SQLException, ClassNotFoundException {
-        if (querycontador <= cantUs) {
-            PreparedStatement ps = null;
-            ResultSet rs = null;
-            Class.forName(Controlador);
-            conexion = DriverManager.getConnection(url_bd2, usersql, passsql);
-            sentencia = conexion.createStatement();
-            String query = "INSERT INTO LIBROS(libronombre,editorial,autor,genero,pais,paginas,edicion,precio) values ('" + p1 + "','" + p2 + "','" + p3 + "','" + p4 + "','" + p5 + "','" + p6 + "','" + p7 + "','" + p8 + "')";
-            try {
-                ps = conexion.prepareStatement(query, ps.RETURN_GENERATED_KEYS);
-                ps.executeUpdate(query, ps.RETURN_GENERATED_KEYS);
-                rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    querycontador = rs.getInt(1);
-                    System.out.println("" + querycontador);
-                }
-                JOptionPane.showMessageDialog(null, "Se han completado los registros del formulario.", "Aviso!!", JOptionPane.INFORMATION_MESSAGE);
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, e.toString(), "AVISO!!", JOptionPane.ERROR_MESSAGE);
-            }
+public void borrararchivol() {
+    formu.archivo = new File("flibro.txt");
+    if (!formu.archivo.exists()) {
+        try {
+            formu.archivo.createNewFile();
+            BufferedWriter bw = new BufferedWriter(new FileWriter(formu.archivo));
+            bw.write("");
+            bw.close();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error con la creacion del archivo.", "Aviso!!", JOptionPane.ERROR_MESSAGE);
+        }
+    } else {
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(formu.archivo));
+            bw.write("");
+            bw.close();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error con la escritura y lectura del archivo.", "Aviso!!", JOptionPane.ERROR_MESSAGE);
         }
     }
+}
 
-    public void borrararchivo() {
-        formu.archivo = new File("registrolibros.txt");
-        if (!formu.archivo.exists()) {
-            try {
-                formu.archivo.createNewFile();
-                BufferedWriter bw = new BufferedWriter(new FileWriter(formu.archivo));
-                bw.write("");
-                bw.close();
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, "Error con la creacion del archivo.", "Aviso!!", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            try {
-                BufferedWriter bw = new BufferedWriter(new FileWriter(formu.archivo));
-                bw.write("");
-                bw.close();
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, "Error con la escritura y lectura del archivo.", "Aviso!!", JOptionPane.ERROR_MESSAGE);
-            }
+public void insFUsuario() throws SQLException, ClassNotFoundException {
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    Class.forName(Controlador);
+    conexion = DriverManager.getConnection(url_bd2, usersql, passsql);
+    sentencia = conexion.createStatement();
+    String query = "INSERT INTO PRESTAMO(idlibro,nombre,apellidos,telefono,libronombre) values ('" + p1 + "','" + p2 + "','" + p3 + "','" + p4 + "','" + p5 + "')";
+    try {
+        ps = conexion.prepareStatement(query, ps.RETURN_GENERATED_KEYS);
+        ps.executeUpdate(query, ps.RETURN_GENERATED_KEYS);
+        JOptionPane.showMessageDialog(null, "Se han completado los registros del formulario.", "Aviso!!", JOptionPane.INFORMATION_MESSAGE);
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, e.toString(), "AVISO!!", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+public void borrararchivou() {
+    formu.archivo = new File("fusuario.txt");
+    if (!formu.archivo.exists()) {
+        try {
+            formu.archivo.createNewFile();
+            BufferedWriter bw = new BufferedWriter(new FileWriter(formu.archivo));
+            bw.write("");
+            bw.close();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error con la creacion del archivo.", "Aviso!!", JOptionPane.ERROR_MESSAGE);
+        }
+    } else {
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(formu.archivo));
+            bw.write("");
+            bw.close();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error con la escritura y lectura del archivo.", "Aviso!!", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+}
+    
     public void DesconectarBasedeDatos() {
         try {
             if (conexion != null) {
@@ -232,6 +256,6 @@ public class conexionbd {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Excepcion", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
-    }
-    
+}
+
 }

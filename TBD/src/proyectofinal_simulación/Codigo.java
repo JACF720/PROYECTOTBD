@@ -1,8 +1,10 @@
 package proyectofinal_simulación;
-
 import Atxy2k.CustomTextField.RestrictedTextField;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,13 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-
 public class Codigo extends javax.swing.JFrame {
-
-    String usr;
-    String pass;
-    //Variables
-    
+    String usr,pass;
     public Connection conexion;
     public Statement sentencia;
     public ResultSet resultado;
@@ -28,31 +25,26 @@ public class Codigo extends javax.swing.JFrame {
     final String url_bd = "jdbc:mysql://localhost/?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     final String url_bd2 = "jdbc:mysql://localhost/" + bd1 + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     final String Controlador = "com.mysql.jdbc.Driver";
-    public String rutaArchivo, linea;
-    String[] parts;
-    String p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15;
     Inicio ini = new Inicio();
     Formulario formu = new Formulario();
-    /**
-     * Creates new form Chi_Cuadrada
-     */
-    public Codigo(String us,String pas) {
-        initComponents();
-        int ancho = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
-        int alto = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setSize(new java.awt.Dimension(ancho-350,alto-450));
-        setTitle("Cuadrados Medios:");
-        setLocationRelativeTo(null);
-        RestrictedTextField restricted = new RestrictedTextField(borrartx);
-        restricted.setLimit(7);
-        //restricted.setOnlyNums(true);
-        setLocationRelativeTo(null);
-        usr=us;
-        pass=pas;
-    }
+    
+public Codigo(String us,String pas) {
+    initComponents();
+    int ancho = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
+    int alto = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
+    setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    setSize(new java.awt.Dimension(ancho-350,alto-450));
+    setTitle("REGISTROS:");
+    setLocationRelativeTo(null);
+    RestrictedTextField restricted = new RestrictedTextField(borrartx);
+    restricted.setLimit(7);
+    //restricted.setOnlyNums(true);
+    setLocationRelativeTo(null);
+    usr=us;
+    pass=pas;
+}
 
-    private Codigo() {
+private Codigo() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -80,18 +72,19 @@ public void mandardatoslibros(String us, String pass) {
             System.out.println(" VendorError : " + ex.getErrorCode());
         }
 }
+
 public void mandardatosusr(String us, String pass) {
         ResultSet result = null;
         Statement sen = null;
         Connection con = null;
         DefaultTableModel m2 = new DefaultTableModel();
-        m2.setColumnIdentifiers(new Object[]{"idprestamo","idusuario","editorial","idlibro","nombre","apellidos","telefono","libronombre"});
+        m2.setColumnIdentifiers(new Object[]{"idprestamo","idusuario","idlibro","editorial","nombre","apellidos","telefono","libronombre"});
         try {
             con = DriverManager.getConnection(url_bd2, us, pass);
             sen = con.createStatement();
             result = sen.executeQuery("SELECT * FROM PRESTAMO");
             while (result.next()) {
-                m2.addRow(new Object[]{result.getString("idprestamo"),result.getString("idusuario"),result.getString("idlibro"),result.getString("nombre"),result.getString("apellidos"),result.getString("telefono"),result.getString("libronombre")});
+                m2.addRow(new Object[]{result.getString("idprestamo"),result.getString("idusuario"),result.getString("idlibro"),result.getString("editorial"),result.getString("nombre"),result.getString("apellidos"),result.getString("telefono"),result.getString("libronombre")});
             }
             tabla_2.setModel(m2);
             result.close();
@@ -104,6 +97,7 @@ public void mandardatosusr(String us, String pass) {
             System.out.println(" VendorError : " + ex.getErrorCode());
         }
 }
+
 public void borrarFormulario(int idb) throws SQLException, ClassNotFoundException {
             PreparedStatement ps = null;
             ResultSet rs = null;
@@ -120,87 +114,7 @@ public void borrarFormulario(int idb) throws SQLException, ClassNotFoundExceptio
                 JOptionPane.showMessageDialog(null, e.toString(), "AVISO!!", JOptionPane.ERROR_MESSAGE);
             }
 }
-    public void leerArchivo() throws SQLException, ClassNotFoundException {
-        Inicio in=new Inicio();
-        Codigo chi=new Codigo(usr,pass);
-        try {
 
-            this.rutaArchivo = "flibro.txt";
-
-            FileReader fr = new FileReader(rutaArchivo);
-            BufferedReader entradaArchivo = new BufferedReader(fr);
-            linea = entradaArchivo.readLine();
-            while (linea != null) {
-                parts = linea.split("\\" + "|");
-                p1 = parts[0];
-                p2 = parts[1];
-                p3 = parts[2];
-                p4 = parts[3];
-                p5 = parts[4];
-                p6 = parts[5];
-                p7 = parts[6];
-                p8 = parts[7];
-                p9 = parts[8];
-                p10 = parts[9];
-                p11 = parts[10];
-                p12 = parts[11];
-                p13 = parts[12];
-                p14 = parts[13];
-                p15 = parts[14];
-                System.out.println("-" + p1 + "-" + p2 + "-" + p3 + "-" + p4 + "-" + p5 + "-" + p6 + "-" + p7 + "-" + p8 + "-" + p9 + "-" + p10 + "-" + p11 + "-" + p12 + "-" + p13 + "-" + p14 + "-" + p15);
-                insertarFormulario();
-                linea = entradaArchivo.readLine();
-            }
-            borrararchivo();
-            chi.setVisible(true);
-            in.dispose();
-        } catch (IOException ex) {
-            System.out.println("Error en la apertura del archivo " + ex.toString());
-        }
-
-    }
-public void insertarFormulario() throws SQLException, ClassNotFoundException {
-        if (querycontador <= cantUs) {
-            PreparedStatement ps = null;
-            ResultSet rs = null;
-            Class.forName(Controlador);
-            conexion = DriverManager.getConnection(url_bd2, usersql, passsql);
-            sentencia = conexion.createStatement();
-            String query = "INSERT INTO FORMULARIO(ALTURA,RESULTADO,EDAD,PESO,DELGADOH,NORMALH,SOBREPESOH,OBESIDADH,DELGADOM,NORMALM,SOBREPESOM,OBESIDADM,IMC,CONTADOR,SEXO) values ('" + p1 + "','" + p2 + "','" + p3 + "','" + p4 + "','" + p5 + "','" + p6 + "','" + p7 + "','" + p8 + "','" + p9 + "','" + p10 + "','" + p11 + "','" + p12 + "','" + p13 + "','" + p14 + "','" + p15 + "')";
-            try {
-                ps = conexion.prepareStatement(query, ps.RETURN_GENERATED_KEYS);
-                ps.executeUpdate(query, ps.RETURN_GENERATED_KEYS);
-//                ps.setString(1, p1);
-//                ps.setString(2, p2);
-//                ps.setString(3, p4);
-//                ps.setString(5, p5);
-//                ps.setString(6, p6);
-//                ps.setString(7, p7);
-//                ps.setString(8, p8);
-//                ps.setString(9, p9);
-//                ps.setString(10, p10);
-//                ps.setString(11, p11);
-//                ps.setString(12, p12);
-//                ps.setString(13, p13);
-//                ps.setString(14, p14);
-//                ps.setString(15, p15);
-                rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    querycontador = rs.getInt(1);
-                    System.out.println("" + querycontador);
-                }
-                JOptionPane.showMessageDialog(null, "Se han completado los registros del formulario.", "Aviso!!", JOptionPane.INFORMATION_MESSAGE);
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, e.toString(), "AVISO!!", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -362,9 +276,6 @@ public void insertarFormulario() throws SQLException, ClassNotFoundException {
         mandardatosusr(usr, pass);
     }//GEN-LAST:event_ACEPTARActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
